@@ -1,0 +1,15 @@
+node_modules/
+.npm-cache/
+.data/
+.chrome-profile/
+coverage/
+test-results/
+.vscode/
+.idea/
+.env
+.env.*
+!.env.example
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#0d2f27" />
+    <meta name="description" content="A private, local WhatsApp dashboard for messages, chats, and contacts." />
+    <title>WhatsApp Desk</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app" id="app">
+      <aside class="sidebar" aria-label="Chats and contacts">
+        <header class="brand-row">
+          <div class="brand">
+            <span class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none">
+                <path d="M7.2 24.9 8.5 21A9.6 9.6 0 1 1 12 24.3l-4.8.6Z" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round" />
+                <path d="M12.2 12.4c.3-.6.6-.6 1-.6h.7c.2 0 .5.1.7.6l1 2.1c.1.3 0 .5-.1.7l-.6.8c-.2.2-.2.4-.1.6.6 1.1 1.6 2.1 2.7 2.7.2.1.5.1.7-.1l.8-.9c.2-.2.4-.3.7-.2l2.1 1c.4.2.5.4.5.7 0 .4-.2 1-.5 1.4-.4.5-1 1.1-1.8 1.1-.9 0-2.5-.3-4.5-1.9-2-1.6-3.4-3.6-3.8-4.6-.4-1-.5-2.4.5-3.4Z" fill="currentColor" />
+              </svg>
+            </span>
+            <span class="brand-copy">
+              <span class="brand-name">WhatsApp Desk</span>
+              <span class="brand-sub">Local &amp; private</span>
+            </span>
+          </div>
+          <button class="status-chip" id="statusChip" type="button" title="Connection status">
+            <span class="status-dot"></span>
+            <span id="statusText">Starting</span>
+          </button>
+        </header>
+
+        <button class="account-card" id="accountCard" type="button" title="Manage linked device">
+          <span class="avatar avatar-me" id="meAvatar">AM</span>
+          <span class="account-copy">
+            <span class="account-name" id="meName">Local workspace</span>
+            <span class="account-phone" id="mePhone">Not linked yet</span>
+          </span>
+          <span class="account-action" id="accountAction">Link</span>
+        </button>
+
+        <div class="auto-reply-card" id="autoReplyCard">
+          <button class="auto-reply-label" id="autoReplySettingsBtn" type="button" title="Auto-reply settings">
+            <span class="auto-reply-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4.5 6.5h15v9h-9l-4 3v-12Z"></path><path d="M8.5 10.5h7M8.5 13h4"></path></svg>
+            </span>
+            <span class="auto-reply-copy">
+              <span class="auto-reply-title">Auto-reply</span>
+              <span class="auto-reply-status" id="autoReplyStatus">Off</span>
+            </span>
+          </button>
+          <button class="switch" id="autoReplyToggle" type="button" role="switch" aria-checked="false" aria-label="Enable auto-reply">
+            <span class="switch-knob"></span>
+          </button>
+        </div>
+
+        <div class="search-row">
+          <label class="search-box" for="searchInput">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+            <input id="searchInput" type="search" placeholder="Search chats and contacts" autocomplete="off" spellcheck="false" />
+            <kbd aria-hidden="true">Ctrl K</kbd>
+          </label>
+          <button class="icon-btn new-chat-btn" id="newChatBtn" type="button" title="New conversation" aria-label="New conversation">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          </button>
+        </div>
+
+        <nav class="tabs" aria-label="Workspace views">
+          <button class="tab is-active" type="button" data-tab="chats">
+            Chats <span class="tab-count" id="chatsCount">0</span>
+          </button>
+          <button class="tab" type="button" data-tab="contacts">
+            Contacts <span class="tab-count" id="contactsCount">0</span>
+          </button>
+        </nav>
+
+        <div class="list-region" id="listRegion">
+          <div class="chat-list" id="chatList" role="list"></div>
+          <div class="contact-list" id="contactsList" role="list" hidden></div>
+          <div class="list-empty" id="listEmpty" hidden>
+            <span class="empty-glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M5 6.5h14v9H9l-4 3v-12Z"></path></svg>
+            </span>
+            <strong id="listEmptyTitle">No conversations yet</strong>
+            <span id="listEmptyText">Link WhatsApp or start a new conversation.</span>
+          </div>
+        </div>
+
+        <footer class="sidebar-foot">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2.5"></rect><path d="M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10"></path></svg>
+          <span>Messages are cached on this computer</span>
+        </footer>
+      </aside>
+
+      <main class="conversation">
+        <section class="welcome" id="welcome">
+          <div class="welcome-glow" aria-hidden="true"></div>
+          <div class="welcome-inner">
+            <div class="welcome-orbit" aria-hidden="true">
+              <span class="orbit orbit-one"></span>
+              <span class="orbit orbit-two"></span>
+              <span class="welcome-mark">
+                <svg viewBox="0 0 32 32" fill="none">
+                  <path d="M7.2 24.9 8.5 21A9.6 9.6 0 1 1 12 24.3l-4.8.6Z" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round" />
+                  <circle cx="12.5" cy="16.8" r="1.3" fill="currentColor" />
+                  <circle cx="17" cy="16.8" r="1.3" fill="currentColor" />
+                  <circle cx="21.5" cy="16.8" r="1.3" fill="currentColor" />
+                </svg>
+              </span>
+            </div>
+            <p class="eyebrow">Your local WhatsApp workspace</p>
+            <h1>All your conversations,<br /><em>in one quiet place.</em></h1>
+            <p class="welcome-lede">Read messages, browse your contacts, and reply from your computer. Link once by scanning a QR code.</p>
+            <div class="welcome-actions">
+              <button class="btn btn-primary" id="welcomePrimary" type="button">Link WhatsApp</button>
+              <button class="btn btn-ghost" id="welcomeNew" type="button">New conversation</button>
+            </div>
+            <div class="welcome-features">
+              <span><svg viewBox="0 0 24 24"><path d="M5 6.5h14v9H9l-4 3v-12Z"></path></svg>Chats &amp; contacts</span>
+              <span><svg viewBox="0 0 24 24"><path d="M13 3 5 14h6l-1 7 8-11h-6l1-7Z"></path></svg>Live messages</span>
+              <span><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2.5"></rect><path d="M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10"></path></svg>Private by design</span>
+            </div>
+            <div class="welcome-recent" id="welcomeRecent" hidden>
+              <span class="recent-label">Jump back in</span>
+              <div class="recent-chips" id="recentChips"></div>
+            </div>
+            <p class="welcome-foot">Unofficial local client · Your message cache never leaves this computer</p>
+          </div>
+        </section>
+
+        <section class="chat-view" id="chatView" hidden>
+          <header class="chat-header">
+            <button class="icon-btn back-btn" id="backBtn" type="button" aria-label="Back to chats">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"></path></svg>
+            </button>
+            <span class="avatar chat-avatar" id="chatAvatar">?</span>
+            <div class="chat-title">
+              <h2 id="chatName">Conversation</h2>
+              <p id="chatMeta">WhatsApp</p>
+            </div>
+            <div class="chat-actions">
+              <button class="icon-btn" id="infoBtn" type="button" title="Contact details" aria-label="Contact details">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 11v5.5M12 7.8v.2"></path></svg>
+              </button>
+            </div>
+          </header>
+
+          <div class="connection-banner" id="connectionBanner" hidden>
+            <span class="banner-dot"></span>
+            <span id="bannerText">You're offline. Messages will sync when WhatsApp reconnects.</span>
+            <button class="banner-action" id="bannerAction" type="button">Reconnect</button>
+          </div>
+
+          <div class="messages" id="messageScroller" tabindex="0">
+            <div class="message-list" id="messageList" role="log" aria-live="polite" aria-relevant="additions"></div>
+          </div>
+
+          <div class="composer-shell">
+            <div class="composer-offline" id="composerOffline" hidden>
+              <span>WhatsApp is not connected. Reconnect to send messages.</span>
+              <button class="text-button" id="composerReconnect" type="button">Reconnect</button>
+            </div>
+            <form class="composer" id="composerForm">
+              <button class="composer-icon" id="emojiBtn" type="button" title="Emoji" aria-label="Choose emoji" aria-expanded="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M8.6 14.2c.8 1.3 2 2 3.4 2s2.6-.7 3.4-2"></path><path d="M9.5 9.8v.1M14.5 9.8v.1"></path></svg>
+              </button>
+              <textarea id="composerInput" rows="1" maxlength="8000" placeholder="Write a message…" aria-label="Write a message" spellcheck="true"></textarea>
+              <button class="send-btn" id="sendBtn" type="submit" disabled title="Send message" aria-label="Send message">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 4 16 8-16 8 3-8-3-8Z"></path><path d="M7 12h13"></path></svg>
+              </button>
+            </form>
+            <div class="emoji-panel" id="emojiPanel" hidden aria-label="Emoji picker"></div>
+            <p class="composer-note"><span>Enter</span> to send · <span>Shift + Enter</span> for a new line</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal" id="sessionModal" role="dialog" aria-modal="true" aria-labelledby="sessionTitle" hidden>
+      <div class="modal-backdrop" data-close-modal="sessionModal"></div>
+      <div class="modal-panel session-panel">
+        <button class="modal-close" type="button" data-close-modal="sessionModal" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+        </button>
+
+        <div id="sessionDisconnected">
+          <p class="eyebrow">Device link</p>
+          <h2 id="sessionTitle">Link your WhatsApp</h2>
+          <p class="modal-lede">Open WhatsApp on your phone and scan this code. It refreshes automatically if it expires.</p>
+          <div class="qr-frame">
+            <div class="qr-loading" id="qrLoading">
+              <span class="spinner" aria-hidden="true"></span>
+              <span id="qrLoadingText">Preparing a secure connection…</span>
+            </div>
+            <img id="qrImage" alt="WhatsApp linking QR code" width="264" height="264" hidden />
+          </div>
+          <p class="form-error" id="sessionError" role="alert"></p>
+          <ol class="steps">
+            <li><span class="step-num">1</span><span>Open WhatsApp on your phone.</span></li>
+            <li><span class="step-num">2</span><span>Tap <strong>Settings</strong>, then <strong>Linked devices</strong>.</span></li>
+            <li><span class="step-num">3</span><span>Tap <strong>Link a device</strong> and point your phone here.</span></li>
+          </ol>
+          <div class="modal-actions">
+            <button class="btn btn-ghost" id="refreshQrBtn" type="button">New code</button>
+            <button class="btn btn-primary" id="closeSessionBtn" type="button">Not now</button>
+          </div>
+        </div>
+
+        <div id="sessionConnected" hidden>
+          <p class="eyebrow">Device link</p>
+          <h2>You're linked</h2>
+          <p class="modal-lede">This computer is connected to WhatsApp. New messages will arrive here while the app is running.</p>
+          <div class="linked-user">
+            <span class="avatar avatar-lg" id="linkedAvatar">AM</span>
+            <div><strong id="linkedName">My WhatsApp</strong><span id="linkedPhone"></span></div>
+            <span class="linked-badge"><span></span>Connected</span>
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-danger" id="unlinkBtn" type="button">Unlink device</button>
+            <button class="btn btn-primary" type="button" data-close-modal="sessionModal">Done</button>
+          </div>
+        </div>
+
+        <div id="sessionDemo" hidden>
+          <p class="eyebrow">Demo workspace</p>
+          <h2>Have a look around</h2>
+          <p class="modal-lede">This is sample data for exploring the interface. Messages you send here are simulated and never leave this computer.</p>
+          <div class="demo-note">
+            <strong>Ready for the real thing?</strong>
+            <span>Stop the demo and run <code>start.bat</code> to link your WhatsApp account.</span>
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-primary" type="button" data-close-modal="sessionModal">Back to demo</button>
+          </div>
+        </div>
+
+        <p class="privacy-note">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2.5"></rect><path d="M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10"></path></svg>
+          Unofficial client · Session keys stay on this device.
+        </p>
+      </div>
+    </div>
+
+    <div class="modal" id="newChatModal" role="dialog" aria-modal="true" aria-labelledby="newChatTitle" hidden>
+      <div class="modal-backdrop" data-close-modal="newChatModal"></div>
+      <div class="modal-panel new-chat-panel">
+        <button class="modal-close" type="button" data-close-modal="newChatModal" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+        </button>
+        <p class="eyebrow">New conversation</p>
+        <h2 id="newChatTitle">Message someone</h2>
+        <p class="modal-lede">Enter a phone number with its country code. We'll check that it's on WhatsApp.</p>
+        <form id="newChatForm">
+          <label class="field">
+            <span>Phone number</span>
+            <input id="newChatPhone" type="tel" inputmode="tel" placeholder="+44 7700 900123" autocomplete="tel" required />
+          </label>
+          <label class="field">
+            <span>Name <small>optional</small></span>
+            <input id="newChatName" type="text" maxlength="120" placeholder="How you know them" autocomplete="off" />
+          </label>
+          <p class="form-error" id="newChatError" role="alert"></p>
+          <div class="modal-actions">
+            <button class="btn btn-ghost" type="button" data-close-modal="newChatModal">Cancel</button>
+            <button class="btn btn-primary" id="newChatSubmit" type="submit">Open chat</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal" id="autoReplyModal" role="dialog" aria-modal="true" aria-labelledby="autoReplyTitle" hidden>
+      <div class="modal-backdrop" data-close-modal="autoReplyModal"></div>
+      <div class="modal-panel auto-reply-panel">
+        <button class="modal-close" type="button" data-close-modal="autoReplyModal" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+        </button>
+        <p class="eyebrow">Message automation</p>
+        <h2 id="autoReplyTitle">Auto-reply</h2>
+        <p class="modal-lede">Send one quiet, automatic response when someone messages you directly.</p>
+
+        <div class="auto-reply-toggle-row">
+          <div>
+            <strong>Enable auto-reply</strong>
+            <span id="autoReplyModalStatus">Off</span>
+          </div>
+          <button class="switch switch-light" id="autoReplyModalToggle" type="button" role="switch" aria-checked="false" aria-label="Enable auto-reply">
+            <span class="switch-knob"></span>
+          </button>
+        </div>
+
+        <label class="field">
+          <span>Reply message</span>
+          <textarea id="autoReplyText" rows="4" maxlength="1000" spellcheck="true"></textarea>
+        </label>
+        <label class="field">
+          <span>Cooldown per contact <small>minutes</small></span>
+          <select id="autoReplyCooldown">
+            <option value="1">1 minute</option>
+            <option value="5">5 minutes</option>
+            <option value="10">10 minutes</option>
+            <option value="30">30 minutes</option>
+            <option value="60">1 hour</option>
+            <option value="240">4 hours</option>
+          </select>
+        </label>
+        <p class="form-hint">Only direct chats. Groups, your own messages, history sync, and chats you are viewing are ignored. If you reply manually first, the automatic reply is skipped.</p>
+        <p class="form-error" id="autoReplyError" role="alert"></p>
+        <div class="modal-actions">
+          <button class="btn btn-ghost" type="button" data-close-modal="autoReplyModal">Cancel</button>
+          <button class="btn btn-primary" id="autoReplySave" type="button">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoTitle" hidden>
+      <div class="modal-backdrop" data-close-modal="infoModal"></div>
+      <div class="modal-panel info-panel">
+        <button class="modal-close" type="button" data-close-modal="infoModal" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+        </button>
+        <div class="info-hero">
+          <span class="avatar avatar-xl" id="infoAvatar">?</span>
+          <h2 id="infoTitle">Contact</h2>
+          <p id="infoSub">WhatsApp contact</p>
+        </div>
+        <div class="info-rows" id="infoRows"></div>
+        <div class="modal-actions" id="infoActions"></div>
+      </div>
+    </div>
+
+    <div class="toast-host" id="toastHost" aria-live="polite" aria-atomic="false"></div>
+    <noscript>This app needs JavaScript enabled.</noscript>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
