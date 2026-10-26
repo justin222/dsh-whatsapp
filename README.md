@@ -1,5 +1,7 @@
 # WhatsApp Desk
 
+[![CI](https://github.com/justin222/dsh-whatsapp/actions/workflows/ci.yml/badge.svg)](https://github.com/justin222/dsh-whatsapp/actions/workflows/ci.yml)
+
 A private, local dashboard for WhatsApp on your computer. Link your phone once by scanning a QR code, then read conversations, browse your contact list, and reply without picking up your phone.
 
 ![WhatsApp Desk preview](docs/preview.png)
@@ -33,7 +35,7 @@ Double-click **`start-demo.bat`** to open a sample workspace at <http://127.0.0.
 ### Run from a GitHub checkout
 
 ```powershell
-git clone <your-repository-url> whatsapp-desk
+git clone https://github.com/justin222/dsh-whatsapp.git whatsapp-desk
 cd whatsapp-desk
 npm ci --ignore-scripts --no-audit --no-fund
 npm start

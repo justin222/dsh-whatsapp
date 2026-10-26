@@ -4,6 +4,14 @@
   "private": true,
   "description": "A local WhatsApp dashboard for chats, contacts, and messages.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justin222/dsh-whatsapp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/justin222/dsh-whatsapp/issues"
+  },
+  "homepage": "https://github.com/justin222/dsh-whatsapp#readme",
   "type": "module",
   "main": "server/index.js",
   "keywords": [
